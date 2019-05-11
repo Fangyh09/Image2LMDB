@@ -1,8 +1,13 @@
 # Image2LMDB
 Convert image folder to lmdb
 
+## Convert image folder to lmdb
 ```python
 python folder2lmdb.py img
+````
+
+## Test it
+```python
 python main.py img/train.lmdb
 ```
 
