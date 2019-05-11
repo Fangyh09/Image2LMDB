@@ -29,13 +29,13 @@ class ImageFolderWithPaths(datasets.ImageFolder):
         return tuple_with_path
 
 
-
 def loads_pyarrow(buf):
     """
     Args:
         buf: the output of `dumps`.
     """
     return pa.deserialize(buf)
+
 
 def read_txt(fname):
     map = {}
@@ -44,9 +44,10 @@ def read_txt(fname):
     # you may also want to remove whitespace characters like `\n` at the end of each line
     content = [x.strip() for x in content]
     for line in content:
-        img, idx  = line.split(" ")
+        img, idx = line.split(" ")
         map[img] = idx
     return map
+
 
 class ImageFolderLMDB(data.Dataset):
     def __init__(self, db_path, transform=None, target_transform=None):
@@ -59,9 +60,6 @@ class ImageFolderLMDB(data.Dataset):
             self.length = loads_pyarrow(txn.get(b'__len__'))
             # self.keys = umsgpack.unpackb(txn.get(b'__keys__'))
             self.keys = loads_pyarrow(txn.get(b'__keys__'))
-            # print(self.length)
-            # print(self.keys)
-
 
         self.transform = transform
         self.target_transform = target_transform
@@ -74,29 +72,20 @@ class ImageFolderLMDB(data.Dataset):
         with env.begin(write=False) as txn:
             print("key", self.keys[index].decode("ascii"))
             byteflow = txn.get(self.keys[index])
-            # byteflow = txn.get(self.img2idx[index])
-        # unpacked = umsgpack.unpackb(byteflow)
+
         unpacked = loads_pyarrow(byteflow)
-        # load image
-        # print("type unpacked", type(unpacked))
-        # imgbuf = unpacked[0]
+
         imgbuf = unpacked
-        # print("imgbuf", imgbuf)
         buf = six.BytesIO()
         buf.write(imgbuf)
         buf.seek(0)
-        import numpy as np 
+        import numpy as np
         img = Image.open(buf).convert('RGB')
         # img.save("img.jpg")
         if self.transform is not None:
             img = self.transform(img)
         im2arr = np.array(img)
-        print(im2arr.shape)
-        # print("img", im2arr)
-        # print(img)
-        # load label
-        # target = unpacked[1]
-
+        # print(im2arr.shape)
 
         if self.target_transform is not None:
             target = self.target_transform(target)
@@ -111,59 +100,10 @@ class ImageFolderLMDB(data.Dataset):
         return self.__class__.__name__ + ' (' + self.db_path + ')'
 
 
-class ImageFolderLMDB_old(data.Dataset):
-    def __init__(self, db_path, transform=None, target_transform=None):
-        import lmdb
-        self.db_path = db_path
-        self.env = lmdb.open(db_path, subdir=osp.isdir(db_path),
-                             readonly=True, lock=False,
-                             readahead=False, meminit=False)
-        with self.env.begin(write=False) as txn:
-            self.length = txn.stat()['entries'] - 1
-            self.keys = msgpack.loads(txn.get(b'__keys__'))
-        # cache_file = '_cache_' + db_path.replace('/', '_')
-        # if os.path.isfile(cache_file):
-        #     self.keys = pickle.load(open(cache_file, "rb"))
-        # else:
-        #     with self.env.begin(write=False) as txn:
-        #         self.keys = [key for key, _ in txn.cursor()]
-        #     pickle.dump(self.keys, open(cache_file, "wb"))
-        self.transform = transform
-        self.target_transform = target_transform
-
-    def __getitem__(self, index):
-        img, target = None, None
-        env = self.env
-        with env.begin(write=False) as txn:
-            byteflow = txn.get(self.keys[index].decode("ascii"))
-        unpacked = msgpack.loads(byteflow)
-        imgbuf = unpacked[0][b'data']
-        buf = six.BytesIO()
-        buf.write(imgbuf)
-        buf.seek(0)
-        img = Image.open(buf).convert('RGB')
-        target = unpacked[1]
-
-        if self.transform is not None:
-            img = self.transform(img)
-
-        if self.target_transform is not None:
-            target = self.target_transform(target)
-
-        return img, target
-
-    def __len__(self):
-        return self.length
-
-    def __repr__(self):
-        return self.__class__.__name__ + ' (' + self.db_path + ')'
-
-
 def raw_reader(path):
     with open(path, 'rb') as f:
         bin_data = f.read()
     return bin_data
-
 
 
 def dumps_pyarrow(obj):
@@ -227,4 +167,4 @@ def folder2lmdb(dpath, name="train", write_frequency=5000):
 import fire
 
 if __name__ == '__main__':
-      fire.Fire(folder2lmdb)
+    fire.Fire(folder2lmdb)
