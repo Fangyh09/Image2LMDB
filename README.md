@@ -1,5 +1,5 @@
 # Image2LMDB
-Convert image folder to lmdb
+Convert image folder to lmdb, adapted from https://github.com/Lyken17/Efficient-PyTorch
 ```
 .
 ├── folder2lmdb.py
