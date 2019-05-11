@@ -14,6 +14,5 @@ python main.py img/train.lmdb
 
 
 Original Repo:
-Most codes are from
 
-https://github.com/Lyken17/Efficient-PyTorch
+Most codes are from https://github.com/Lyken17/Efficient-PyTorch
