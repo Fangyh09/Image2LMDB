@@ -65,7 +65,8 @@ class ImageFolderLMDB(data.Dataset):
 
         self.transform = transform
         self.target_transform = target_transform
-        self.img2idx = read_txt("images_idx.map")
+        map_path = db_path[:-5] + "_images_idx.txt"
+        self.img2idx = read_txt(map_path)
 
     def __getitem__(self, index):
         img, target = None, None
@@ -86,15 +87,16 @@ class ImageFolderLMDB(data.Dataset):
         buf.seek(0)
         import numpy as np 
         img = Image.open(buf).convert('RGB')
-        img.save("img.jpg")
+        # img.save("img.jpg")
+        if self.transform is not None:
+            img = self.transform(img)
         im2arr = np.array(img)
+        print(im2arr.shape)
         # print("img", im2arr)
         # print(img)
         # load label
         # target = unpacked[1]
 
-        if self.transform is not None:
-            img = self.transform(img)
 
         if self.target_transform is not None:
             target = self.target_transform(target)
@@ -194,6 +196,7 @@ def folder2lmdb(dpath, name="train", write_frequency=5000):
         # print(type(data), data)
         # image, label = data[0]
         image, label, imgpath = data[0]
+        # print(image.shape)
         imgpath = basename(imgpath)
         all_imgpath.append(imgpath)
         all_idxs.append(idx)
@@ -215,7 +218,7 @@ def folder2lmdb(dpath, name="train", write_frequency=5000):
     db.sync()
     db.close()
 
-    fout = open("images_idx.map", "w")
+    fout = open(dpath + "/" + name + "_images_idx.txt", "w")
     for img, idx in zip(all_imgpath, all_idxs):
         fout.write("{} {}\n".format(img, idx))
     fout.close()
