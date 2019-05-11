@@ -1,5 +1,41 @@
 # Image2LMDB
 Convert image folder to lmdb
+```
+.
+├── folder2lmdb.py
+├── img
+│   ├── train
+│   │   ├── bar_dir
+│   │   │   ├── 100000.jpg
+│   │   │   ├── 100001.jpg
+│   │   │   ├── 100002.jpg
+│   │   │   ├── 100003.jpg
+│   │   │   ├── 100004.jpg
+│   │   │   ├── 100005.jpg
+│   │   │   ├── 100006.jpg
+│   │   │   ├── 100007.jpg
+│   │   │   ├── 100008.jpg
+│   │   │   └── 100009.jpg
+│   │   └── foo_dir
+│   │       ├── 100000.jpg
+│   │       ├── 100001.jpg
+│   │       ├── 100002.jpg
+│   │       ├── 100003.jpg
+│   │       ├── 100004.jpg
+│   │       ├── 100005.jpg
+│   │       ├── 100006.jpg
+│   │       ├── 100007.jpg
+│   │       ├── 100008.jpg
+│   │       └── 100009.jpg
+│   ├── train_images_idx.txt
+│   ├── train.lmdb
+│   └── train.lmdb-lock
+├── main.py
+├── __pycache__
+│   └── folder2lmdb.cpython-36.pyc
+├── README.md
+└── requirements.txt
+```
 
 ## Convert image folder to lmdb
 ```python
@@ -10,6 +46,7 @@ python folder2lmdb.py img
 ```python
 python main.py img/train.lmdb
 ```
+
 
 ```
 key 0
