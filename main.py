@@ -1,4 +1,4 @@
-from folder2lmdb import ImageFolderLMDB,ImageFolderLMDB_old
+from folder2lmdb import ImageFolderLMDB 
 import lmdb
 from torch.utils.data import DataLoader
 import umsgpack
@@ -12,7 +12,7 @@ def main(path):
     dst = ImageFolderLMDB(path, transform, None)
     loader = DataLoader(dst, batch_size=2)
     for x in loader:
-            print(x)
+        print(x.shape)
 
 
 if __name__ == '__main__':
