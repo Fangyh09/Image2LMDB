@@ -27,12 +27,9 @@ Convert image folder to lmdb, adapted from https://github.com/Lyken17/Efficient-
 │   │       ├── 100007.jpg
 │   │       ├── 100008.jpg
 │   │       └── 100009.jpg
-│   ├── train_images_idx.txt
-│   ├── train.lmdb
-│   └── train.lmdb-lock
+│   
+│   
 ├── main.py
-├── __pycache__
-│   └── folder2lmdb.cpython-36.pyc
 ├── README.md
 └── requirements.txt
 ```
